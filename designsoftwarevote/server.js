@@ -114,8 +114,12 @@ const hasBuiltAssets = fs.existsSync(distPath)
 if (hasBuiltAssets) {
   app.use(express.static(distPath))
 
-  app.get('*', (_req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'))
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next()
+    }
+
+    return res.sendFile(path.join(distPath, 'index.html'))
   })
 }
 
